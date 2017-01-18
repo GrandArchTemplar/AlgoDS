@@ -29,6 +29,5 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Util" />
-    <orderEntry type="module" module-name="AlgoDS" />
   </component>
 </module>
