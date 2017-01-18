@@ -26,6 +26,7 @@ public class Dijkstra {
     public static MinPath distancingVertices(@NotNull Graph graph, int initNum) {
         ArrayList<Vertex> result = new ArrayList<>(graph.getVertices());
         HashMap<Integer, Vertex> parent = new HashMap<>();
+        parent.put(initNum, graph.getVertex(initNum));
         result.forEach(v -> v.setDistance(Integer.MAX_VALUE));
         result.get(initNum).setDistance(0);
         TreeSet<Vertex> queue = new TreeSet<>(
