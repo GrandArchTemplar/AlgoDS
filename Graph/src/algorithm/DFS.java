@@ -5,15 +5,11 @@ import graph.Graph;
 import org.jetbrains.annotations.NotNull;
 import vertex.Vertex;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.IntStream;
 
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by grandarchtemplar on 18/12/16.
@@ -76,5 +72,55 @@ public class DFS {
                 .stream()
                 .sorted(comparing(Vertex::getDistance))
                 .collect(toList());
+    }
+
+    /**
+     * consume directed graph only
+     * @param graph -- graph
+     * @return list of vertex list where each list is cycle
+     */
+    public static List<List<Vertex>> getCycle(Graph graph) {
+        int n = graph.verticesNum();
+        ArrayList<ArrayList<Vertex>> results = new ArrayList<>();
+        HashSet<Vertex> remaining = new HashSet<>(graph.getVertices());
+        ArrayList<Vertex> parents = new ArrayList<>();
+        IntStream.range(0, n).forEach(i -> parents.add(Vertex.NEUTRAL));
+        Stack<Vertex> vertices = new Stack<>();
+        ArrayList<Vertex> result = new ArrayList<>();
+        while (!remaining.isEmpty()) {
+            Vertex init = remaining.stream().findAny().orElse(Vertex.NEUTRAL);
+            vertices.add(init);
+            while (!vertices.isEmpty()) {
+                Vertex from = vertices.pop();
+                int fromNumber = from.getNumber();
+                remaining.remove(from);
+                graph.neighboursAsEdges(fromNumber)
+                        .stream()
+                        .map(Edge::getTo)
+                        .map(graph::getVertex)
+                        .forEach(to -> {
+                            if (!remaining.contains(to)) {
+                                Vertex current = from;
+                                Vertex point = to;
+                                result.clear();
+                                while (!current.equals(point)) {
+                                    result.add(current);
+                                    current = parents.get(current.getNumber());
+                                }
+                                result.add(point);
+                                Collections.reverse(result);
+                                result.add(point);
+                                results.add(new ArrayList<>(result));
+                                return;
+                            }
+                            vertices.add(to);
+                            remaining.remove(to);
+                            parents.set(to.getNumber(), from);
+                        });
+            }
+
+        }
+        return results.stream().collect(toList());
+
     }
 }

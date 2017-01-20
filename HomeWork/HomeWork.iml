@@ -10,5 +10,6 @@
     <orderEntry type="module" module-name="Graph" />
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="module" module-name="Geometry" />
+    <orderEntry type="module" module-name="AlgoDS" />
   </component>
 </module>
